@@ -8,7 +8,7 @@
     "function",
     "date"
   ],
-  "version": "0.1.11",
+  "version": "0.1.12",
   "repository": {
     "type": "git",
     "url": "git://github.com/pvorb/node-clone.git"
@@ -41,5 +41,13 @@
   "optionalDependencies": {},
   "scripts": {
     "test": "nodeunit test.js"
+  },
+  "cortex": {
+    "dependencies": {
+      "util": "~1.0.2"
+    },
+    "asyncDependencies": {},
+    "devDependencies": {},
+    "scripts": {}
   }
 }

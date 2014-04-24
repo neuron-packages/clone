@@ -1,31 +1,18 @@
 "use strict";
 
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
+function getRegExpFlags (re) {
+  var flags = '';
+  re.global && (flags += 'g');
+  re.ignoreCase && (flags += 'i');
+  re.multiline && (flags += 'm');
+  return flags;
 }
 
-var util = {
-  isArray: function (ar) {
-    return Array.isArray(ar) || (typeof ar === 'object' && objectToString(ar) === '[object Array]');
-  },
-  isDate: function (d) {
-    return typeof d === 'object' && objectToString(d) === '[object Date]';
-  },
-  isRegExp: function (re) {
-    return typeof re === 'object' && objectToString(re) === '[object RegExp]';
-  },
-  getRegExpFlags: function (re) {
-    var flags = '';
-    re.global && (flags += 'g');
-    re.ignoreCase && (flags += 'i');
-    re.multiline && (flags += 'm');
-    return flags;
-  }
-};
 
-if (typeof module === 'object')
-  module.exports = clone;
+module.exports = clone;
 
+var util = require('util');
+  
 /**
  * Clones (copies) an Object using deep copying.
  *
@@ -76,7 +63,7 @@ function clone(parent, circular) {
       else if (util.isDate(parent))
         child = new Date(parent.getTime());
       else if (util.isRegExp(parent)) {
-        child = new RegExp(parent.source, util.getRegExpFlags(parent));
+        child = new RegExp(parent.source, getRegExpFlags(parent));
         if (parent.lastIndex) child.lastIndex = parent.lastIndex;
       } else if (useBuffer && Buffer.isBuffer(parent))
       {
@@ -127,7 +114,7 @@ function clone(parent, circular) {
       else if (util.isDate(parent))
         child = new Date(parent.getTime() );
       else if (util.isRegExp(parent)) {
-        child = new RegExp(parent.source, util.getRegExpFlags(parent));
+        child = new RegExp(parent.source, getRegExpFlags(parent));
         if (parent.lastIndex) child.lastIndex = parent.lastIndex;
       } else {
         child = {};
@@ -142,18 +129,3 @@ function clone(parent, circular) {
   }
 }
 
-/**
- * Simple flat clone using prototype, accepts only objects, usefull for property
- * override on FLAT configuration object (no nested props).
- *
- * USE WITH CAUTION! This may not behave as you wish if you do not know how this
- * works.
- */
-clone.clonePrototype = function(parent) {
-  if (parent === null)
-    return null;
-
-  var c = function () {};
-  c.prototype = parent;
-  return new c();
-};
